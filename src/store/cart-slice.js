@@ -2,8 +2,9 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const cartSlice = createSlice({
     name: 'cart',
-    initialState: { items: [], totalQuantity: 0 },
+    initialState: { items: [], totalQuantity: 0, changed: false },
     reducers: {
+        // replaceCart is to fetch the data from firebase and replace the cart with the data we get from firebase..
         replaceCart(state, action) {
             state.totalQuantity = action.payload.totalQuantity;
             state.items = action.payload.items;
@@ -12,6 +13,7 @@ const cartSlice = createSlice({
             const newItem = action.payload;
             const existingItem = state.items.find(item => item.id === newItem.id);
             state.totalQuantity++;
+            state.changed = true;
             if (!existingItem) {
                 state.items.push({
                     id: newItem.id,
@@ -29,6 +31,7 @@ const cartSlice = createSlice({
             const id = action.payload;
             const existingItem = state.items.find(item => item.id === id);
             state.totalQuantity--;
+            state.changed = true;
             if (existingItem.quantity === 1) {
                 // We remove the item from the cart by filtering it out the item with the id we want to remove. We keep all items that do not match the id we want to remove.
                 state.items = state.items.filter(item => item.id !== id);
